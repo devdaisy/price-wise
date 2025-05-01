@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function InventoryForm({ onAddItem, currentItem }) {
+function InventoryInput({ onAddItem, currentItem }) {
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [unit, setUnit] = useState("");
@@ -114,4 +114,4 @@ function InventoryForm({ onAddItem, currentItem }) {
   );
 }
 
-export default InventoryForm;
+export default InventoryInput;
