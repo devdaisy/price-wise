@@ -1,93 +1,52 @@
-import { useState } from "react";
+import { useContext } from "react";
+import AppContext from "../context/AppContext";
 import { Link } from "react-router-dom";
 import OverheadInput from "../components/Overhead/OverheadInput";
-import OutputList from "../components/Overhead/OverheadList";
+import OverheadList from "../components/Overhead/OverheadList";
 
-function Output() {
-  const [overheadExpenses, setOverheadExpenses] = useState([]);
-  const [editingIndex, setEditingIndex] = useState(null);
-
-  // add overhead expense to list, if not editing expense, just add new expense
-  const addOverheadExpense = (newExpense) => {
-    if (editingIndex !== null) {
-      const updatedExpenses = [...overheadExpenses];
-      updatedExpenses[editingIndex] = newExpense;
-      setOverheadExpenses(updatedExpenses);
-      setEditingIndex(null);
-    } else {
-      setOverheadExpenses([...overheadExpenses, newExpense]);
-    }
-  };
-
-  // delete overhead expense from list
-  const deleteOverheadExpense = (indexToDelete) => {
-    const updatedExpenses = overheadExpenses.filter(
-      (_, index) => index !== indexToDelete
-    );
-    setOverheadExpenses(updatedExpenses);
-
-    // stop editing if expense has been deleted
-    if (editingIndex !== null && editingIndex >= indexToDelete) {
-      setEditingIndex(null);
-    }
-  };
-
-  const editOverheadExpense = (index) => {
-    setEditingIndex(index);
-  };
+function Overhead() {
+  const {
+    overheadExpenses,
+    addOverheadExpense,
+    deleteOverheadExpense,
+    editOverheadExpense,
+  } = useContext(AppContext);
 
   return (
-    <div className="flex flex-col min-h-screen p-6">
-      <div className="mb-4">
-        <Link
-          to="/inventory"
-          className="flex items-center text-blue-600 hover:text-blue-800"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5 mr-2"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="m12 19-7-7 7-7" />
-            <path d="M19 12H5" />
-          </svg>
-          Back
+    <div className="container py-5">
+      {/* back button + header */}
+      <header className="d-flex justify-content-between align-items-center mb-4">
+        <Link to="/inventory" className="btn btn-outline-secondary">
+          &larr; Back to Inventory
         </Link>
-      </div>
-      <div>
-        {/* output overhead list */}
-        <OutputList
+        <h2 className="mb-0 text-end">Overhead Expense Management</h2>
+      </header>
+
+      {/* overhead list */}
+      <div className="border rounded p-4 mb-4">
+        <OverheadList
           expense={overheadExpenses}
           deleteOverheadExpense={deleteOverheadExpense}
           editOverheadExpense={editOverheadExpense}
         />
-
-        {/* output overhead input */}
-        <OverheadInput
-          onAddExpense={addOverheadExpense}
-          currentExpense={
-            editingIndex !== null ? overheadExpenses[editingIndex] : null
-          }
-        />
       </div>
 
-      <div className="p-6 flex justify-end mt-12">
-        <Link to="/product-builder">
-          <button
-            type="button"
-            className="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded shadow-xl"
-          >
-            Next: Product Builder
-          </button>
+      {/* overhead input form */}
+      <div className="border rounded p-4 mb-4">
+        <OverheadInput onAddExpense={addOverheadExpense} />
+      </div>
+
+      {/* next button */}
+      <div className="d-flex justify-content-end mt-5">
+        <Link
+          to="/builder"
+          className="btn btn-outline-dark px-4 py-2 mt-0 shadow"
+        >
+          Next: Builder
         </Link>
       </div>
     </div>
   );
 }
 
-export default Output;
+export default Overhead;

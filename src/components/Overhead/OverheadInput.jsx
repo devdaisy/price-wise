@@ -17,7 +17,7 @@ function OverheadInput({ onAddExpense, currentExpense }) {
     e.preventDefault();
 
     if (!label || !totalCost || !frequency) {
-      alert("Please make sure to fill out everything!");
+      alert("Please fill out all fields!");
       return;
     }
 
@@ -28,39 +28,33 @@ function OverheadInput({ onAddExpense, currentExpense }) {
     };
 
     onAddExpense(newExpense);
-    // clear form after adding expense to list
     setLabel("");
     setTotalCost("");
     setFrequency("");
   };
 
-  //TODO
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* expense label */}
-      <div>
-        <label className="block text-sm font-medium">Expense Label</label>
+    <form onSubmit={handleSubmit} className="mb-4">
+      <div className="mb-3">
+        <label className="form-label">Expense Label</label>
         <input
           type="text"
-          className="mt-1 p-2 border rounded w-full"
+          className="form-control"
+          placeholder="e.g., Rent, Software Subscription"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
         />
       </div>
 
-      {/* total cost + frequency side-by-side */}
-      <div className="flex space-x-4">
-        {/* Total Cost */}
-        <div className="flex-1 relative">
-          <label className="block text-sm font-medium">Total Cost</label>
-          <div className="mt-1 relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span className="text-gray-500">$</span>
-            </div>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label className="form-label">Total Cost</label>
+          <div className="input-group">
+            <span className="input-group-text">$</span>
             <input
               type="number"
               step="0.01"
-              className="pl-7 p-2 border rounded w-full"
+              className="form-control"
               placeholder="0.00"
               value={totalCost}
               onChange={(e) => setTotalCost(e.target.value)}
@@ -68,11 +62,10 @@ function OverheadInput({ onAddExpense, currentExpense }) {
           </div>
         </div>
 
-        {/* Frequency */}
-        <div className="flex-1">
-          <label className="block text-sm font-medium">Expense Frequency</label>
+        <div className="col-md-6">
+          <label className="form-label">Expense Frequency</label>
           <select
-            className="mt-1 p-2 h-10 border rounded w-full"
+            className="form-select"
             value={frequency}
             onChange={(e) => setFrequency(e.target.value)}
           >
@@ -85,11 +78,7 @@ function OverheadInput({ onAddExpense, currentExpense }) {
         </div>
       </div>
 
-      {/* add expense button */}
-      <button
-        type="submit"
-        className="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded"
-      >
+      <button type="submit" className="btn btn-dark mt-2">
         {currentExpense ? "Update Expense" : "Add Expense"}
       </button>
     </form>

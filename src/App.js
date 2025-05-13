@@ -1,16 +1,18 @@
-import { BrowserRouter as Router } from "react-router-dom";
-import AppRoutes from "./AppRoutes";
+import { useLocation } from 'react-router-dom';
+import AppRoutes from './AppRoutes';
+import AppNavbar from './components/Navbar';
 
 function App() {
+  const { pathname } = useLocation();
+
+  // only hide navbar on "/" landing page, for now at least
+  const showNavbar = pathname !== '/';
+
   return (
-    <Router>
-      <div>
-        <p class="bg-gradient-to-r from-blue-600 to-fuchsia-600 text-4xl font-bold text-white">
-          PriceWise
-        </p>
-      </div>
+    <>
+      {showNavbar && <AppNavbar />}
       <AppRoutes />
-    </Router>
+    </>
   );
 }
 

@@ -1,51 +1,57 @@
-import React from "react";
+import { Table, Button } from "react-bootstrap";
 
-function OutputList({ expense, deleteOverheadExpense, editOverheadExpense }) {
+function OverheadList({ expense, deleteOverheadExpense, editOverheadExpense }) {
   if (!expense || expense.length === 0) {
     return (
-      <div className="mb-6">
-        <p className="text-gray-500 text-center">No overhead expenses yet.</p>
+      <div
+        className="d-flex justify-content-center align-items-center text-center text-secondary"
+        style={{ height: "50px" }}
+      >
+        <p className="mb-0">No overhead yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto mb-6">
-      <table className="min-w-full bg-white shadow rounded">
-        <thead>
-          <tr className="bg-gray-100 text-gray-700">
-            <th className="text-left p-2">Expense Label</th>
-            <th className="text-left p-2">Total Cost</th>
-            <th className="text-left p-2">Expense Frequency</th>
-            <th className="text-left p-2">Action</th>
+    <div className="table-responsive mb-4">
+      <Table striped bordered hover responsive>
+        <thead className="table-light">
+          <tr>
+            <th>Expense Label</th>
+            <th>Total Cost</th>
+            <th>Frequency</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {expense.map((expense, index) => (
-            <tr key={index} className="border-t">
-              <td className="p-2">{expense.label}</td>
-              <td className="p-2">${expense.totalCost.toFixed(2)}</td>
-              <td className="p-2">{expense.frequency}</td>
-              <td className="p-2 space-x-2">
-                <button
+          {expense.map((exp, index) => (
+            <tr key={index}>
+              <td>{exp.label}</td>
+              <td>${exp.totalCost.toFixed(2)}</td>
+              <td>{exp.frequency}</td>
+              <td>
+                <Button
+                  variant="outline-primary"
+                  size="sm"
+                  className="me-2"
                   onClick={() => editOverheadExpense(index)}
-                  className="text-blue-600 hover:underline"
                 >
                   Edit
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="outline-danger"
+                  size="sm"
                   onClick={() => deleteOverheadExpense(index)}
-                  className="text-red-600 hover:underline"
                 >
                   Delete
-                </button>
+                </Button>
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 }
 
-export default OutputList;
+export default OverheadList;

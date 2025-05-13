@@ -1,101 +1,100 @@
-import { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
+import AppContext from "../../context/AppContext";
 
-function InventoryInput({ onAddItem, currentItem }) {
-  const [name, setName] = useState("");
+function InventoryInput() {
+  const { addInventoryItem } = useContext(AppContext);
+
+  const [label, setLabel] = useState("");
   const [quantity, setQuantity] = useState("");
   const [unit, setUnit] = useState("");
   const [totalCost, setTotalCost] = useState("");
-
-  useEffect(() => {
-    if (currentItem) {
-      setName(currentItem.name || "");
-      setQuantity(currentItem.quantity || "");
-      setUnit(currentItem.unit || "");
-      setTotalCost(currentItem.totalCost || "");
-    }
-  }, [currentItem]);
+  const [unitsPerPack, setUnitsPerPack] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!name || !quantity || !unit || !totalCost) {
-      alert("Please make sure to fill out everything!");
-      return;
-    }
-
     const newItem = {
-      name,
+      label: label,
       quantity: parseFloat(quantity),
-      unit,
+      unit: unit,
       totalCost: parseFloat(totalCost),
+      unitsPerPack: unit === "Pack(s)" ? parseFloat(unitsPerPack) : 1,
     };
 
-    onAddItem(newItem);
+    addInventoryItem(newItem);
 
-    // clear form after adding item to list
-    setName("");
+    setLabel("");
     setQuantity("");
     setUnit("");
     setTotalCost("");
+    setUnitsPerPack("");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* item name */}
-      <div>
-        <label className="block text-sm font-medium">Item Name</label>
+    <form onSubmit={handleSubmit} className="mb-4">
+      <div className="mb-3">
+        <label className="form-label">Item Label</label>
         <input
           type="text"
-          className="mt-1 p-2 border rounded w-full"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          className="form-control"
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
         />
       </div>
 
-      {/* quantity purchased and unit of measure */}
-      <div className="flex space-x-4">
-        <div className="flex-1">
-          <label className="block text-sm font-medium">
-            Quantity Purchased
-          </label>
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <label className="form-label">Quantity Purchased</label>
           <input
             type="number"
-            className="mt-1 p-2 border rounded w-full"
+            className="form-control"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
           />
         </div>
 
-        <div className="flex-1">
-          <label className="block text-sm font-medium">Unit of Measure</label>
+        <div className="col-md-6">
+          <label className="form-label">Unit of Measure</label>
           <select
-            className="mt-1 p-2 border rounded w-full"
+            className="form-select"
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
           >
             <option value="">Select Unit</option>
             <option value="Gallon(s)">Gallon(s)</option>
-            <option value="Pound(s)">Pound(s)</option>
             <option value="Liter(s)">Liter(s)</option>
-            <option value="Dozen(s)">Dozen(s)</option>
+            <option value="Quart(s)">Quart(s)</option>
+            <option value="Pint(s)">Pint(s)</option>
+            <option value="Fluid Ounce(s)">Fluid Ounce(s)</option>
+            <option value="Pack(s)">Pack(s)</option>
+            <option value="Pound(s)">Pound(s)</option>
             <option value="Ounce(s)">Ounce(s)</option>
             <option value="Gram(s)">Gram(s)</option>
-            <option value="Individual Item">Individual Item</option>
+            <option value="Individual Unit">Individual Unit</option>
           </select>
         </div>
       </div>
 
-      {/* total purchase cost */}
-      <div className="relative">
-        <label className="block text-sm font-medium">Total Purchase Cost</label>
-        <div className="mt-1 relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span className="text-gray-500">$</span>
-          </div>
+      {unit === "Pack(s)" && (
+        <div className="mb-3">
+          <label className="form-label">Units Per Pack</label>
+          <input
+            type="number"
+            className="form-control"
+            value={unitsPerPack}
+            onChange={(e) => setUnitsPerPack(e.target.value)}
+          />
+        </div>
+      )}
+
+      <div className="mb-3">
+        <label className="form-label">Total Purchase Cost</label>
+        <div className="input-group">
+          <span className="input-group-text">$</span>
           <input
             type="number"
             step="0.01"
-            className="pl-7 p-2 border rounded w-full"
+            className="form-control"
             placeholder="0.00"
             value={totalCost}
             onChange={(e) => setTotalCost(e.target.value)}
@@ -103,12 +102,8 @@ function InventoryInput({ onAddItem, currentItem }) {
         </div>
       </div>
 
-      {/* add item button */}
-      <button
-        type="submit"
-        className="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded"
-      >
-        {currentItem ? "Update Item" : "Add Item"}
+      <button type="submit" className="btn btn-dark mt-2">
+        Add Item
       </button>
     </form>
   );
