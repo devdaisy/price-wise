@@ -19,7 +19,7 @@ function Overhead() {
         <Link to="/inventory" className="btn btn-outline-secondary">
           &larr; Back to Inventory
         </Link>
-        <h2 className="mb-0 text-end">Overhead Expense Management</h2>
+        <h2 className="mb-0 text-end">Overhead Management</h2>
       </header>
 
       {/* overhead list */}

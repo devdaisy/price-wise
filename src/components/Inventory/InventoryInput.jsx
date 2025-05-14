@@ -1,8 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AppContext from "../../context/AppContext";
 
 function InventoryInput() {
-  const { addInventoryItem } = useContext(AppContext);
+  const {
+    inventoryItems,
+    addInventoryItem,
+    editInventoryItem,
+    editingIndex,
+    setEditingIndex,
+  } = useContext(AppContext);
 
   const [label, setLabel] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -13,22 +19,49 @@ function InventoryInput() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (!label || !quantity || !unit || !totalCost) {
+      alert("Please fill out all fields!");
+      return;
+    }
+
     const newItem = {
-      label: label,
+      label,
       quantity: parseFloat(quantity),
-      unit: unit,
+      unit,
       totalCost: parseFloat(totalCost),
       unitsPerPack: unit === "Pack(s)" ? parseFloat(unitsPerPack) : 1,
     };
 
-    addInventoryItem(newItem);
+    if (editingIndex !== null) {
+      editInventoryItem(editingIndex, newItem);
+    } else {
+      addInventoryItem(newItem);
+    }
 
+    resetForm();
+  };
+
+  const resetForm = () => {
     setLabel("");
     setQuantity("");
     setUnit("");
     setTotalCost("");
     setUnitsPerPack("");
+    setEditingIndex(null);
   };
+
+  useEffect(() => {
+    if (editingIndex !== null) {
+      const item = inventoryItems[editingIndex];
+      if (item) {
+        setLabel(item.label);
+        setQuantity(item.quantity.toString());
+        setUnit(item.unit);
+        setTotalCost(item.totalCost.toString());
+        setUnitsPerPack(item.unitsPerPack.toString());
+      }
+    }
+  }, [editingIndex, inventoryItems]);
 
   return (
     <form onSubmit={handleSubmit} className="mb-4">
@@ -103,7 +136,7 @@ function InventoryInput() {
       </div>
 
       <button type="submit" className="btn btn-dark mt-2">
-        Add Item
+        {editingIndex !== null ? "Update Item" : "Add Item"}
       </button>
     </form>
   );

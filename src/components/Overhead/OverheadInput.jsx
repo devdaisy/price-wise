@@ -1,17 +1,18 @@
-import { useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+import AppContext from "../../context/AppContext";
 
-function OverheadInput({ onAddExpense, currentExpense }) {
+function OverheadInput() {
+  const {
+    overheadExpenses,
+    addOverheadExpense,
+    editOverheadExpense,
+    editingIndex,
+    setEditingIndex,
+  } = useContext(AppContext);
+
   const [label, setLabel] = useState("");
   const [totalCost, setTotalCost] = useState("");
   const [frequency, setFrequency] = useState("");
-
-  useEffect(() => {
-    if (currentExpense) {
-      setLabel(currentExpense.label || "");
-      setTotalCost(currentExpense.totalCost || "");
-      setFrequency(currentExpense.frequency || "");
-    }
-  }, [currentExpense]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,11 +28,34 @@ function OverheadInput({ onAddExpense, currentExpense }) {
       frequency,
     };
 
-    onAddExpense(newExpense);
+    if (editingIndex !== null) {
+      editOverheadExpense(editingIndex, newExpense);
+    } else {
+      addOverheadExpense(newExpense);
+    }
+
+    resetForm();
+  };
+
+  // reset form inputs
+  const resetForm = () => {
     setLabel("");
     setTotalCost("");
     setFrequency("");
+    setEditingIndex(null); // reset editing state
   };
+
+  // populate the form when editing
+  useEffect(() => {
+    if (editingIndex !== null) {
+      const editingExpense = overheadExpenses[editingIndex];
+      if (editingExpense) {
+        setLabel(editingExpense.label);
+        setTotalCost(editingExpense.totalCost.toString());
+        setFrequency(editingExpense.frequency);
+      }
+    }
+  }, [editingIndex, overheadExpenses]);
 
   return (
     <form onSubmit={handleSubmit} className="mb-4">
@@ -79,7 +103,7 @@ function OverheadInput({ onAddExpense, currentExpense }) {
       </div>
 
       <button type="submit" className="btn btn-dark mt-2">
-        {currentExpense ? "Update Expense" : "Add Expense"}
+        {editingIndex !== null ? "Update Expense" : "Add Expense"}{" "}
       </button>
     </form>
   );

@@ -1,7 +1,12 @@
+import { useContext } from "react";
+import AppContext from "../../context/AppContext";
 import { Table, Button } from "react-bootstrap";
 
-function OverheadList({ expense, deleteOverheadExpense, editOverheadExpense }) {
-  if (!expense || expense.length === 0) {
+function OverheadList() {
+  const { overheadExpenses, deleteOverheadExpense, setEditingIndex } =
+    useContext(AppContext);
+
+  if (!overheadExpenses || overheadExpenses.length === 0) {
     return (
       <div
         className="d-flex justify-content-center align-items-center text-center text-secondary"
@@ -14,7 +19,7 @@ function OverheadList({ expense, deleteOverheadExpense, editOverheadExpense }) {
 
   return (
     <div className="table-responsive mb-4">
-      <Table striped bordered hover responsive>
+      <Table striped bordered hover>
         <thead className="table-light">
           <tr>
             <th>Expense Label</th>
@@ -24,30 +29,34 @@ function OverheadList({ expense, deleteOverheadExpense, editOverheadExpense }) {
           </tr>
         </thead>
         <tbody>
-          {expense.map((exp, index) => (
-            <tr key={index}>
-              <td>{exp.label}</td>
-              <td>${exp.totalCost.toFixed(2)}</td>
-              <td>{exp.frequency}</td>
-              <td>
-                <Button
-                  variant="outline-primary"
-                  size="sm"
-                  className="me-2"
-                  onClick={() => editOverheadExpense(index)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  onClick={() => deleteOverheadExpense(index)}
-                >
-                  Delete
-                </Button>
-              </td>
-            </tr>
-          ))}
+          {overheadExpenses.map((exp, index) => {
+            if (!exp) return null;
+
+            return (
+              <tr key={index}>
+                <td>{exp.label}</td>
+                <td>${exp.totalCost.toFixed(2)}</td>
+                <td>{exp.frequency}</td>
+                <td>
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    className="me-2"
+                    onClick={() => setEditingIndex(index)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={() => deleteOverheadExpense(index)}
+                  >
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
     </div>

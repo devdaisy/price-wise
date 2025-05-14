@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import AppContext from "../../context/AppContext";
+import { Table, Button } from "react-bootstrap";
 
 function InventoryList() {
-  const { inventoryItems, deleteInventoryItem, editInventoryItem } =
+  const { inventoryItems, deleteInventoryItem, setEditingIndex } =
     useContext(AppContext);
 
   if (!inventoryItems || inventoryItems.length === 0) {
@@ -18,7 +19,7 @@ function InventoryList() {
 
   return (
     <div className="table-responsive mb-4">
-      <table className="table table-striped table-bordered">
+      <Table striped bordered hover>
         <thead className="table-light">
           <tr>
             <th>Item Label</th>
@@ -44,24 +45,27 @@ function InventoryList() {
                 <td>{item.unit || "N/A"}</td>
                 <td>${item.totalCost.toFixed(2)}</td>
                 <td>
-                  <button
-                    className="btn btn-outline-primary btn-sm me-2"
-                    onClick={() => editInventoryItem(index)}
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    className="me-2"
+                    onClick={() => setEditingIndex(index)}
                   >
                     Edit
-                  </button>
-                  <button
-                    className="btn btn-outline-danger btn-sm"
+                  </Button>
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
                     onClick={() => deleteInventoryItem(index)}
                   >
                     Delete
-                  </button>
+                  </Button>
                 </td>
               </tr>
             );
           })}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 }

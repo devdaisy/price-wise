@@ -2,71 +2,139 @@ import { useState } from "react";
 import AppContext from "./AppContext";
 
 const AppProvider = ({ children }) => {
+  /** =======================
+   *  State Management
+   *  =======================
+   */
   const [inventoryItems, setInventoryItems] = useState([]);
   const [overheadExpenses, setOverheadExpenses] = useState([]);
   const [products, setProducts] = useState([]);
   const [services, setServices] = useState([]);
+  const [editingIndex, setEditingIndex] = useState(null); // Handles editing state globally
 
-  // inventory functions
-  const addInventoryItem = (item) => setInventoryItems([...inventoryItems, item]);
-  const deleteInventoryItem = (index) => setInventoryItems(inventoryItems.filter((_, i) => i !== index));
+  /** =======================
+   *  Inventory Functions
+   *  =======================
+   */
+  const addInventoryItem = (item) => {
+    setInventoryItems([...inventoryItems, item]);
+  };
+
   const editInventoryItem = (index, updatedItem) => {
     const updated = [...inventoryItems];
-    updated[index] = updatedItem;
-    setInventoryItems(updated);
+    if (updated[index]) {
+      updated[index] = { ...updated[index], ...updatedItem };
+      setInventoryItems(updated);
+    }
+    setEditingIndex(null); // Reset editing index after update
   };
 
-  // overhead functions
-  const addOverheadExpense = (expense) => setOverheadExpenses([...overheadExpenses, expense]);
-  const deleteOverheadExpense = (index) => setOverheadExpenses(overheadExpenses.filter((_, i) => i !== index));
+  const deleteInventoryItem = (index) => {
+    setInventoryItems(inventoryItems.filter((_, i) => i !== index));
+    setEditingIndex(null);
+  };
+
+  /** =======================
+   *  Overhead Functions
+   *  =======================
+   */
+  const addOverheadExpense = (expense) => {
+    setOverheadExpenses([...overheadExpenses, expense]);
+  };
+
   const editOverheadExpense = (index, updatedExpense) => {
     const updated = [...overheadExpenses];
-    updated[index] = updatedExpense;
-    setOverheadExpenses(updated);
+    if (updated[index]) {
+      updated[index] = { ...updated[index], ...updatedExpense };
+      setOverheadExpenses(updated);
+    }
+    setEditingIndex(null); // Reset editing index after update
   };
 
-  // product functions
-  const addProduct = (product) => setProducts([...products, product]);
-  const deleteProduct = (index) => setProducts(products.filter((_, i) => i !== index));
+  const deleteOverheadExpense = (index) => {
+    setOverheadExpenses(overheadExpenses.filter((_, i) => i !== index));
+    setEditingIndex(null);
+  };
+
+  /** =======================
+   *  Product Functions
+   *  =======================
+   */
+  const addProduct = (product) => {
+    setProducts([...products, product]);
+  };
+
   const editProduct = (index, updatedProduct) => {
     const updated = [...products];
-    updated[index] = updatedProduct;
-    setProducts(updated);
+    if (updated[index]) {
+      updated[index] = { ...updated[index], ...updatedProduct };
+      setProducts(updated);
+    }
+    setEditingIndex(null);
   };
 
-  // service functions
-  const addService = (service) => setServices([...services, service]);
-  const deleteService = (index) => setServices(services.filter((_, i) => i !== index));
+  const deleteProduct = (index) => {
+    setProducts(products.filter((_, i) => i !== index));
+    setEditingIndex(null);
+  };
+
+  /** =======================
+   *  Service Functions
+   *  =======================
+   */
+  const addService = (service) => {
+    setServices([...services, service]);
+  };
+
   const editService = (index, updatedService) => {
     const updated = [...services];
-    updated[index] = updatedService;
-    setServices(updated);
+    if (updated[index]) {
+      updated[index] = { ...updated[index], ...updatedService };
+      setServices(updated);
+    }
+    setEditingIndex(null);
   };
 
-  return (
-    <AppContext.Provider
-      value={{
-        inventoryItems,
-        addInventoryItem,
-        deleteInventoryItem,
-        editInventoryItem,
-        overheadExpenses,
-        addOverheadExpense,
-        deleteOverheadExpense,
-        editOverheadExpense,
-        products,
-        addProduct,
-        deleteProduct,
-        editProduct,
-        services,
-        addService,
-        deleteService,
-        editService,
-      }}
-    >
-      {children}
-    </AppContext.Provider>
-  );
+  const deleteService = (index) => {
+    setServices(services.filter((_, i) => i !== index));
+    setEditingIndex(null);
+  };
+
+  /** =======================
+   *  Context Value
+   *  =======================
+   */
+  const contextValue = {
+    // Inventory
+    inventoryItems,
+    addInventoryItem,
+    editInventoryItem,
+    deleteInventoryItem,
+
+    // Overhead
+    overheadExpenses,
+    addOverheadExpense,
+    editOverheadExpense,
+    deleteOverheadExpense,
+
+    // Products
+    products,
+    addProduct,
+    editProduct,
+    deleteProduct,
+
+    // Services
+    services,
+    addService,
+    editService,
+    deleteService,
+
+    // Editing
+    editingIndex,
+    setEditingIndex,
+  };
+
+  return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
 };
 
 export default AppProvider;
